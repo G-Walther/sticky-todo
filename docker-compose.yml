@@ -1,32 +1,31 @@
 version: "3.9"
 services:
   api:
-    build: ./api
-    expose:
-      - "80"
+    image: sticky-todo-api
     ports:
-      - "80"
+      - "8000:8000"
     environment:
       - STICKY_TODO_DB_HOST=sticky_todo_db
       - STICKY_TODO_DB_ID=admin
       - STICKY_TODO_DB_PASSWORD=admin
+    volumes:
+      - ./api:/usr/src/app
     networks:
-      - "sticky-todo"
+      - "net"
     deploy:
       mode: replicated
       replicas: 2
 
   db:
-    build: ./db
-    expose:
-      - "27017"
+    image: sticky-todo-db
     ports:
-      - "27017"
+      - "27017:27017"
     networks:
-      - "sticky-todo"
+      - "net"
     deploy:
       mode: replicated
       replicas: 1
 
 networks:
-  "sticky-todo":
+  net:
+    driver: overlay
